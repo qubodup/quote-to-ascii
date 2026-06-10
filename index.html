@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Convert Unicode Quote Characters to ASCII</title>
+
+<style>
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+pre {
+    background: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ccc;
+    white-space: pre-wrap;
+}
+</style>
+</head>
+<body>
+
+<h2>Convert Unicode Quote Characters to ASCII</h2>
+
+<label for="input">Input</label>
+<textarea id="input" placeholder="Paste text here..."></textarea>
+
+<button onclick="convertQuotes()">Convert</button>
+
+<label for="output">Output</label>
+<textarea id="output" readonly></textarea>
+
+<h3>Report</h3>
+<pre id="report">No conversions yet.</pre>
+
+<script>
+function convertQuotes() {
+    const text = document.getElementById('input').value;
+
+    const replacements = {
+        '“': '"',
+        '”': '"',
+        '„': '"',
+        '‟': '"',
+        '❝': '"',
+        '❞': '"',
+        '＂': '"',
+
+        '‘': "'",
+        '’': "'",
+        '‚': "'",
+        '‛': "'",
+        '❛': "'",
+        '❜': "'",
+        '＇': "'",
+        '`': "'",
+        '´': "'"
+    };
+
+    const counts = {};
+    let total = 0;
+
+    const converted = text.replace(
+        /[“”„‟❝❞＂‘’‚‛❛❜＇`´]/g,
+        match => {
+            counts[match] = (counts[match] || 0) + 1;
+            total++;
+            return replacements[match];
+        }
+    );
+
+    document.getElementById('output').value = converted;
+
+    let report = '';
+
+    if (total === 0) {
+        report = 'No quote characters found.';
+    } else {
+        report += `Total replacements: ${total}\n\n`;
+
+        for (const [char, count] of Object.entries(counts)) {
+            report += `${JSON.stringify(char)} → ${JSON.stringify(replacements[char])}: ${count}\n`;
+        }
+    }
+
+    document.getElementById('report').textContent = report;
+}
+</script>
+
+<footer style="margin-top:2rem;padding-top:1rem;border-top:1px solid #ccc;text-align:center;font-size:0.9em;">
+    <p>
+        <a href="https://qubodup.github.io/locatools/">LocaTools</a>
+        &middot;
+        <a href="https://github.com/qubodup/quote-to-ascii">Source Code</a>
+    </p>
+</footer>
+
+</body>
+</html>
